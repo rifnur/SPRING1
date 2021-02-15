@@ -1,6 +1,9 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.salary;
+
+import ru.geekbrains.persist.User;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -20,8 +23,18 @@ public class Product {
     @Column( nullable = false)
     private int price;
 
+
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "customer_id")
+////    private Customer customer;
+//    private List<Customer> customers;
+@ManyToMany(mappedBy = "roles")
+private List<Customer> customers;
+
     public Product() {
     }
+
+
 
     public Product(String title, Integer price) {
         this.title = title;

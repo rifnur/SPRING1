@@ -1,5 +1,5 @@
 
-package ru.geekbrains.persist;
+package ru.geekbrains.salary;
 
         import javax.persistence.EntityManager;
         import javax.persistence.EntityManagerFactory;
