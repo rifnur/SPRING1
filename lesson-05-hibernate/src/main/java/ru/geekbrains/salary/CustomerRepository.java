@@ -1,44 +1,44 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.salary;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
+        import javax.persistence.EntityManager;
+        import javax.persistence.EntityManagerFactory;
+        import java.util.List;
+        import java.util.function.Consumer;
+        import java.util.function.Function;
 
-public class UserRepository {
+public class CustomerRepository {
 
     private final EntityManagerFactory emFactory;
 
-    public UserRepository(EntityManagerFactory emFactory) {
+    public CustomerRepository(EntityManagerFactory emFactory) {
         this.emFactory = emFactory;
     }
 
-    public List<User> findAll() {
+    public List<Customer> findAll() {
         return executeForEntityManager(
-                em -> em.createNamedQuery("allUsers", User.class).getResultList()
+                em -> em.createNamedQuery("allCustomers", Customer.class).getResultList()
         );
     }
 
-    public User findById(long id) {
+    public Customer findById(long id) {
         return executeForEntityManager(
-                em -> em.find(User.class, id)
+                em -> em.find(Customer.class, id)
         );
     }
 
-    public void insert(User user) {
-        executeInTransaction(em -> em.persist(user));
+    public void insert(Customer customer) {
+        executeInTransaction(em -> em.persist(customer));
     }
 
-    public void update(User user) {
-        executeInTransaction(em -> em.merge(user));
+    public void update(Customer customer) {
+        executeInTransaction(em -> em.merge(customer));
     }
 
     public void delete(long id) {
         executeInTransaction(em -> {
-            User user = em.find(User.class, id);
-            if (user != null) {
-                em.remove(user);
+            Customer customer = em.find(Customer.class, id);
+            if (customer != null) {
+                em.remove(customer);
             }
         });
     }

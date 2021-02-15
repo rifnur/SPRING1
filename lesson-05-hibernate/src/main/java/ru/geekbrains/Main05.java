@@ -1,14 +1,13 @@
 package ru.geekbrains;
 
 import org.hibernate.cfg.Configuration;
-import ru.geekbrains.persist.Product;
+import ru.geekbrains.salary.Product;
 //import ru.geekbrains.persist.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.List;
 
-public class Main {
+public class Main05 {
 
     public static void main(String[] args) {
         EntityManagerFactory emFactory = new Configuration()
@@ -17,23 +16,17 @@ public class Main {
 
         EntityManager em = emFactory.createEntityManager();
 
-        EntityManagerFactory emFactoryProduct = new Configuration()
-                .configure("hibernateProduct.cfg.xml")
-                .buildSessionFactory();
-
-        EntityManager emProduct = emFactoryProduct.createEntityManager();
-
         // INSERT PRODUCT
-        emProduct.getTransaction().begin();
+        em.getTransaction().begin();
 
         Product product = new Product("Apple", 150);
         Product product1 = new Product("Orange", 180);
-        emProduct.persist(product);
-        emProduct.persist(product1);
+        em.persist(product);
+        em.persist(product1);
 
-        emProduct.getTransaction().commit();
+        em.getTransaction().commit();
 
-        emProduct.close();
+        em.close();
 
         // INSERT
 //        em.getTransaction().begin();

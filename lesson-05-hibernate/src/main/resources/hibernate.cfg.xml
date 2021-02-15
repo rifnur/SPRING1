@@ -17,5 +17,10 @@
         <property name="hibernate.format_sql">true</property>
 
         <mapping class="ru.geekbrains.persist.User"/>
+        <mapping class="ru.geekbrains.persist.Contact"/>
+        <mapping class="ru.geekbrains.salary.Product"/>
+        <mapping class="ru.geekbrains.persist.Role"/>
+        <mapping class="ru.geekbrains.salary.Transaction"/>
+
     </session-factory>
 </hibernate-configuration>
