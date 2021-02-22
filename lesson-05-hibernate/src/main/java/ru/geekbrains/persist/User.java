@@ -30,6 +30,9 @@ public class User {
     @ManyToMany
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "user")
+    private List<LineItem> lineItems;
+
     public User() {
     }
 
@@ -89,6 +92,14 @@ public class User {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<LineItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = lineItems;
     }
 
     @Override

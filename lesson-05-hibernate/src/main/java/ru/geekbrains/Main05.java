@@ -1,11 +1,10 @@
-package ru.geekbrains;
+package ru.geekbrains.persist;
 
 import org.hibernate.cfg.Configuration;
-import ru.geekbrains.salary.Product;
-//import ru.geekbrains.persist.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
 public class Main05 {
 
@@ -15,18 +14,6 @@ public class Main05 {
                 .buildSessionFactory();
 
         EntityManager em = emFactory.createEntityManager();
-
-        // INSERT PRODUCT
-        em.getTransaction().begin();
-
-        Product product = new Product("Apple", 150);
-        Product product1 = new Product("Orange", 180);
-        em.persist(product);
-        em.persist(product1);
-
-        em.getTransaction().commit();
-
-        em.close();
 
         // INSERT
 //        em.getTransaction().begin();
@@ -91,16 +78,16 @@ public class Main05 {
 //            em.remove(user);
 //        }
 
-//        em.createQuery("delete from User where username=:username")
-//                .setParameter("username", "user2")
-//                .executeUpdate();
-//
-//        em.getTransaction().commit();
-//
-//        List<User> userList = em.createQuery("from User", User.class)
-//                .getResultList();
-//        System.out.println(userList);
-//
-//        em.close();
+        em.createQuery("delete from User where username=:username")
+                .setParameter("username", "user2")
+                .executeUpdate();
+
+        em.getTransaction().commit();
+
+        List<User> userList = em.createQuery("from User", User.class)
+                .getResultList();
+        System.out.println(userList);
+
+        em.close();
     }
 }

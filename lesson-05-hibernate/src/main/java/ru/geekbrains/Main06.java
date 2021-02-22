@@ -1,12 +1,10 @@
- package ru.geekbrains;
+package ru.geekbrains.persist;
 
- import org.hibernate.cfg.Configuration;
- import ru.geekbrains.persist.Contact;
- import ru.geekbrains.persist.User;
+import org.hibernate.cfg.Configuration;
 
- import javax.persistence.EntityManager;
- import javax.persistence.EntityManagerFactory;
- import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.List;
 
 public class Main06 {
 
