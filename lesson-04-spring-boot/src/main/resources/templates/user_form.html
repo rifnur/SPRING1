@@ -35,7 +35,7 @@
 <div class="container">
     <div class="row py-2">
         <div class="col-12">
-            <form th:action="@{/user/update}" th:method="post" th:object="${user}">
+            <form th:action="@{/user/update}" th:method="post" th:object="${userRepr}">
                 <input type="hidden" th:field="*{id}" id="id" name="id">
 
                 <div class="form-group">
@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <label>Matching password</label>
                     <input type="password" th:field="*{matchingPassword}" class="form-control" id="matchingPassword" name="matchingPassword" placeholder="Enter matching password">
-                    <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                    <p class="text-danger" th:if="${#fields.hasErrors('matchingPassword')}" th:errors="*{matchingPassword}"></p>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>

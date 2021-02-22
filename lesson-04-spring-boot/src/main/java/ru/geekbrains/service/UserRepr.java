@@ -1,34 +1,35 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.service;
 
-import ru.geekbrains.service.UserRepr;
+import ru.geekbrains.persist.User;
 
-import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
-@Entity
-@Table(name = "users")
-public class User {
+// DTO
+public class UserRepr {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String username;
 
-    @Column(nullable = false, length = 512)
+    @NotEmpty
     private String password;
 
-    @Column
+    @NotEmpty
+    private String matchingPassword;
+
+    @Email
     private String email;
 
-    public User() {
+    public UserRepr() {
     }
 
-    public User(String username) {
+    public UserRepr(String username) {
         this.username = username;
     }
 
-    public User(UserRepr user) {
+    public UserRepr(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
@@ -65,5 +66,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
     }
 }
