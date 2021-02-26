@@ -1,7 +1,6 @@
 package ru.geekbrains.persist;
 
 import ru.geekbrains.service.ProductRepr;
-import ru.geekbrains.service.UserRepr;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
