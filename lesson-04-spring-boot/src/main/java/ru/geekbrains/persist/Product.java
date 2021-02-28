@@ -1,8 +1,9 @@
 package ru.geekbrains.persist;
 
+import ru.geekbrains.service.ProductRepr;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -12,23 +13,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String title;
 
-    private String description;
-
+    @Column(nullable = false)
     private BigDecimal price;
-
-    @OneToMany(mappedBy = "product")
-    private List<LineItem> lineItems;
 
     public Product() {
     }
 
-    public Product(String title, String description, BigDecimal price) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-    }
+    public Product(ProductRepr product) {
+        this.id = product.getId();
+        this.title = product.getTitle();
+        this.price = product.getPrice();    }
 
     public Long getId() {
         return id;
@@ -46,27 +43,11 @@ public class Product {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public List<LineItem> getLineItems() {
-        return lineItems;
-    }
-
-    public void setLineItems(List<LineItem> lineItems) {
-        this.lineItems = lineItems;
     }
 }
