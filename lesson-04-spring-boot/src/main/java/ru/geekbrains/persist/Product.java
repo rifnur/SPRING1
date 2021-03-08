@@ -1,8 +1,12 @@
 package ru.geekbrains.persist;
 
+import ru.geekbrains.service.ProductRepr;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "products")
@@ -12,23 +16,21 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank
+    @Column
     private String title;
 
-    private String description;
-
+    @NotNull
+    @Column
     private BigDecimal price;
-
-    @OneToMany(mappedBy = "product")
-    private List<LineItem> lineItems;
 
     public Product() {
     }
 
-    public Product(String title, String description, BigDecimal price) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-    }
+    public Product(Long id, String title,  BigDecimal price) {
+        this.id = getId();
+        this.title = getTitle();
+        this.price = getPrice();    }
 
     public Long getId() {
         return id;
@@ -46,14 +48,6 @@ public class Product {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
@@ -62,11 +56,17 @@ public class Product {
         this.price = price;
     }
 
-    public List<LineItem> getLineItems() {
-        return lineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id.equals(product.id);
     }
 
-    public void setLineItems(List<LineItem> lineItems) {
-        this.lineItems = lineItems;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
+
 }

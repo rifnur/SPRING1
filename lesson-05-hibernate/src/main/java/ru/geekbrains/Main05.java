@@ -1,14 +1,12 @@
-package ru.geekbrains;
+package ru.geekbrains.persist;
 
 import org.hibernate.cfg.Configuration;
-import ru.geekbrains.persist.Product;
-//import ru.geekbrains.persist.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-public class Main {
+public class Main05 {
 
     public static void main(String[] args) {
         EntityManagerFactory emFactory = new Configuration()
@@ -16,24 +14,6 @@ public class Main {
                 .buildSessionFactory();
 
         EntityManager em = emFactory.createEntityManager();
-
-        EntityManagerFactory emFactoryProduct = new Configuration()
-                .configure("hibernateProduct.cfg.xml")
-                .buildSessionFactory();
-
-        EntityManager emProduct = emFactoryProduct.createEntityManager();
-
-        // INSERT PRODUCT
-        emProduct.getTransaction().begin();
-
-        Product product = new Product("Apple", 150);
-        Product product1 = new Product("Orange", 180);
-        emProduct.persist(product);
-        emProduct.persist(product1);
-
-        emProduct.getTransaction().commit();
-
-        emProduct.close();
 
         // INSERT
 //        em.getTransaction().begin();
@@ -98,16 +78,16 @@ public class Main {
 //            em.remove(user);
 //        }
 
-//        em.createQuery("delete from User where username=:username")
-//                .setParameter("username", "user2")
-//                .executeUpdate();
-//
-//        em.getTransaction().commit();
-//
-//        List<User> userList = em.createQuery("from User", User.class)
-//                .getResultList();
-//        System.out.println(userList);
-//
-//        em.close();
+        em.createQuery("delete from User where username=:username")
+                .setParameter("username", "user2")
+                .executeUpdate();
+
+        em.getTransaction().commit();
+
+        List<User> userList = em.createQuery("from User", User.class)
+                .getResultList();
+        System.out.println(userList);
+
+        em.close();
     }
 }
