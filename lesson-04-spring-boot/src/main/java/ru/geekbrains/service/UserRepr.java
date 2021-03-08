@@ -1,10 +1,14 @@
 package ru.geekbrains.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.geekbrains.persist.Role;
 import ru.geekbrains.persist.User;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 // DTO
 public class UserRepr {
@@ -26,6 +30,8 @@ public class UserRepr {
 
     private Integer age;
 
+    private Set<Role> roles;
+
     public UserRepr() {
     }
 
@@ -39,6 +45,7 @@ public class UserRepr {
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.age = user.getAge();
+        this.roles = new HashSet<>(user.getRoles());
     }
 
     public Long getId() {
@@ -87,5 +94,26 @@ public class UserRepr {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRepr userRepr = (UserRepr) o;
+        return id.equals(userRepr.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

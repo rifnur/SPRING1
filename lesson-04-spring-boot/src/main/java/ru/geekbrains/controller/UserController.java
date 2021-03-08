@@ -4,16 +4,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ru.geekbrains.persist.RoleRepository;
 import ru.geekbrains.service.UserRepr;
 import ru.geekbrains.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -24,9 +33,11 @@ public class UserController {
 
     private final UserService userService;
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService userService, RoleRepository roleRepository) {
+        this.userService = userService;this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -47,23 +58,30 @@ public class UserController {
                 size.orElse(3),
                 sortField.orElse(null)
         );
-        model.addAttribute("users", users);
+
+           model.addAttribute("users", users);
         return "user";
     }
 
     @GetMapping("/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model) {
+    public String editPage(@PathVariable("id") Long id, Model model, Authentication auth, HttpServletRequest req) {
         logger.info("Edit page for id {} requested", id);
 
+        auth.getAuthorities().stream().anyMatch(ath -> ath.getAuthority().equals("ROLE_ADMIN"));
+        req.isUserInRole("ROLE_ADMIN");
+
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(NotFoundException::new));
         return "user_form";
     }
 
+    @Secured({"SUPER_ADMIN"})
     @PostMapping("/update")
     public String update(@Valid @ModelAttribute("user") UserRepr user, BindingResult result, Model model) {
         logger.info("Update endpoint requested");
 
+        model.addAttribute("roles", roleRepository.findAll());
         if (result.hasErrors()) {
             return "user_form";
         }
@@ -81,6 +99,7 @@ public class UserController {
     public String create(Model model) {
         logger.info("Create new user request");
 
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", new UserRepr());
         return "user_form";
     }

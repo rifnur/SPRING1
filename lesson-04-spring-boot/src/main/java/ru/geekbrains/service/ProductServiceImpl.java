@@ -1,5 +1,7 @@
 package ru.geekbrains.service;
 
+        import org.slf4j.Logger;
+        import org.slf4j.LoggerFactory;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.data.domain.Page;
         import org.springframework.data.domain.PageRequest;
@@ -9,12 +11,15 @@ package ru.geekbrains.service;
         import org.springframework.transaction.annotation.Transactional;
         import ru.geekbrains.persist.*;
 
+        import java.math.BigDecimal;
         import java.util.List;
         import java.util.Optional;
         import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    private final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository productRepository;
 
@@ -24,50 +29,53 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductRepr> findAll() {
-        return productRepository.findAll().stream()
-                .map(ProductRepr::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<ProductRepr> findWithFilter(String titleFilter, Integer minPrice, Integer maxPrice,
-                                            Integer page, Integer size, String sortField) {
+    public Page<Product> findWithFilter(Optional<String> titleFilter,
+                                        Optional<BigDecimal> minPrice,
+                                        Optional<BigDecimal> maxPrice,
+                                        Optional<Integer> page,
+                                        Optional<Integer> size,
+                                        Optional<String> sortField,
+                                        Optional<String> sortOrder) {
         Specification<Product> spec = Specification.where(null);
-        if (titleFilter != null && !titleFilter.isBlank()) {
-            spec = spec.and(ProductSpecification.titleLike(titleFilter));
+        if (titleFilter.isPresent() && !titleFilter.get().isBlank()) {
+            logger.info("Adding {} to filter", titleFilter.get());
+            spec = spec.and(ProductSpecification.titleLike(titleFilter.get()));
         }
-        if (minPrice != null) {
-            spec = spec.and(ProductSpecification.minPrice(minPrice));
+        if (minPrice.isPresent()) {
+            logger.info("Adding {} to filter", minPrice.get());
+            spec = spec.and(ProductSpecification.minPriceFilter(minPrice.get()));
         }
-        if (maxPrice != null) {
-            spec = spec.and(ProductSpecification.maxPrice(maxPrice));
+        if (maxPrice.isPresent()) {
+            logger.info("Adding {} to filter", maxPrice.get());
+            spec = spec.and(ProductSpecification.maxPriceFilter(maxPrice.get()));
         }
-        if (sortField != null && !sortField.isBlank()) {
-            return productRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortField)))
-                    .map(ProductRepr::new);
+        if (sortField.isPresent() && !sortField.isPresent()) {
+            return productRepository.findAll(spec, PageRequest.of(page.orElse(1) - 1, size.orElse(5),
+                    Sort.by(Sort.Direction.fromString(sortOrder.orElse("ASC")), sortField.get()))
+                    );
         }
-        return productRepository.findAll(spec, PageRequest.of(page, size))
-                .map(ProductRepr::new);
+        return productRepository.findAll(spec, PageRequest.of(page.orElse(1) - 1, size.orElse(5)));
     }
 
+    @Override
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
 
     @Transactional
     @Override
-    public Optional<ProductRepr> findById(long id) {
-        return productRepository.findById(id)
-                .map(ProductRepr::new);
+    public void save(Product product) {
+        productRepository.save(product);
     }
 
     @Transactional
     @Override
-    public void save(ProductRepr product) {
-        productRepository.save(new Product(product));
-    }
-
-    @Transactional
-    @Override
-    public void delete(long id) {
+    public void deleteById(long id) {
         productRepository.deleteById(id);
     }
 }

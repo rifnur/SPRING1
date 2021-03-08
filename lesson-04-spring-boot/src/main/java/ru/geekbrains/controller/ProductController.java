@@ -10,11 +10,11 @@ package ru.geekbrains.controller;
         import org.springframework.validation.BindingResult;
         import org.springframework.web.bind.annotation.*;
         import org.springframework.web.servlet.ModelAndView;
-        import ru.geekbrains.service.ProductRepr;
+        import ru.geekbrains.persist.Product;
         import ru.geekbrains.service.ProductService;
 
         import javax.validation.Valid;
-        import java.util.List;
+        import java.math.BigDecimal;
         import java.util.Optional;
 
 @Controller
@@ -33,27 +33,21 @@ public class ProductController {
     @GetMapping
     public String listPage(Model model,
                            @RequestParam("titleFilter") Optional<String> titleFilter,
-                           @RequestParam("priceMinFilter") Optional<Integer> priceMinFilter,
-                           @RequestParam("priceMaxFilter") Optional<Integer> priceMaxFilter,
+                           @RequestParam("minPrice") Optional<BigDecimal> minPrice,
+                           @RequestParam("maxPrice") Optional<BigDecimal> maxPrice,
                            @RequestParam("page") Optional<Integer> page,
                            @RequestParam("size") Optional<Integer> size,
-                           @RequestParam("sortField") Optional<String> sortField) {
+                           @RequestParam("sortField") Optional<String> sortField,
+                           @RequestParam(name = "sortOrder") Optional<String> sortOrder) {
         logger.info("List page requested");
 
-        Page<ProductRepr> products=productService.findWithFilter(
-                titleFilter.orElse(null),
-                priceMinFilter.orElse(null),
-                priceMaxFilter.orElse(null),
-                page.orElse(1) - 1,
-                size.orElse(3),
-                sortField.orElse(null)
-        );
-        model.addAttribute("products", products);
-        return "product";
+        model.addAttribute("products", productService.findWithFilter(titleFilter, minPrice, maxPrice,
+                page, size, sortField, sortOrder));
+          return "product";
     }
 
     @GetMapping("/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model) {
+    public String editProduct(@PathVariable("id") Long id, Model model) {
         logger.info("Edit page for id {} requested", id);
 
         model.addAttribute("product", productService.findById(id)
@@ -62,7 +56,7 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid @ModelAttribute("product") ProductRepr product, BindingResult result, Model model) {
+    public String updateProduct(@Valid @ModelAttribute("product") Product product, BindingResult result) {
         logger.info("Update endpoint requested");
 
         if (result.hasErrors()) {
@@ -74,18 +68,18 @@ public class ProductController {
     }
 
     @GetMapping("/new")
-    public String create(Model model) {
+    public String newProduct(Model model) {
         logger.info("Create new product request");
 
-        model.addAttribute("product", new ProductRepr());
+        model.addAttribute("product");
         return "product_form";
     }
 
     @DeleteMapping("/{id}")
-    public String remove(@PathVariable("id") Long id) {
+    public String deleteProduct(@PathVariable("id") Long id) {
         logger.info("Product delete request");
 
-        productService.delete(id);
+        productService.deleteById(id);
         return "redirect:/product";
     }
     @ExceptionHandler

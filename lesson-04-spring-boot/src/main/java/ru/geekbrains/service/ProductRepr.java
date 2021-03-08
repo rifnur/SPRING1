@@ -12,7 +12,7 @@ public class ProductRepr {
     @NotEmpty
     private String title;
 
-    @NotEmpty
+//    @NotEmpty
     private BigDecimal price;
 
     public ProductRepr() {

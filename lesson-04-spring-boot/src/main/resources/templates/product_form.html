@@ -35,7 +35,7 @@
 <div class="container">
     <div class="row py-2">
         <div class="col-12">
-            <form th:action="@{/product/update}" th:method="post" th:object="${productRepr}">
+            <form th:action="@{/product/update}" th:method="post" th:object="${product}">
                 <input type="hidden" th:field="*{id}" id="id" name="id">
 
                 <div class="form-group">

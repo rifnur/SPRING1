@@ -6,6 +6,7 @@ package ru.geekbrains.persist;
         import org.springframework.data.repository.query.Param;
         import org.springframework.stereotype.Repository;
 
+        import java.math.BigDecimal;
         import java.util.List;
 
 @Repository
@@ -20,5 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findWithFilter(@Param("title") String titleFilter,
                                  @Param("minPrice") Integer minPrice,
                                  @Param("maxPrice") Integer maxPrice);
+
+    List<Product> findByPriceBetween(BigDecimal min, BigDecimal max);
 
 }
