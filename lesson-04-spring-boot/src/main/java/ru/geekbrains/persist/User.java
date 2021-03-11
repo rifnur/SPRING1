@@ -11,7 +11,6 @@ import java.util.Set;
         query = "select new ru.geekbrains.persist.UserRole(u.username, r.name) " +
                 "from User u" +
                 " left join u.roles r")
-
 public class User {
 
     @Id
@@ -99,7 +98,6 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 
     @Override
     public String toString() {

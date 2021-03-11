@@ -3,7 +3,6 @@ package ru.geekbrains.controller;
         import org.slf4j.Logger;
         import org.slf4j.LoggerFactory;
         import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.data.domain.Page;
         import org.springframework.http.HttpStatus;
         import org.springframework.stereotype.Controller;
         import org.springframework.ui.Model;
@@ -23,43 +22,38 @@ public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-    private final ProductService productService;
-
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    private ProductService productService;
 
     @GetMapping
     public String listPage(Model model,
-                           @RequestParam("titleFilter") Optional<String> titleFilter,
-                           @RequestParam("minPrice") Optional<BigDecimal> minPrice,
-                           @RequestParam("maxPrice") Optional<BigDecimal> maxPrice,
-                           @RequestParam("page") Optional<Integer> page,
-                           @RequestParam("size") Optional<Integer> size,
-                           @RequestParam("sortField") Optional<String> sortField,
+                           @RequestParam(name = "nameFilter") Optional<String> nameFilter,
+                           @RequestParam(name = "minPrice") Optional<BigDecimal> minPrice,
+                           @RequestParam(name = "maxPrice") Optional<BigDecimal> maxPrice,
+                           @RequestParam(name = "page") Optional<Integer> page,
+                           @RequestParam(name = "size") Optional<Integer> size,
+                           @RequestParam(name = "sortField") Optional<String> sortField,
                            @RequestParam(name = "sortOrder") Optional<String> sortOrder) {
         logger.info("List page requested");
 
-        model.addAttribute("products", productService.findWithFilter(titleFilter, minPrice, maxPrice,
+        model.addAttribute("products", productService.findWithFilter(nameFilter, minPrice, maxPrice,
                 page, size, sortField, sortOrder));
           return "product";
     }
 
     @GetMapping("/{id}")
-    public String editProduct(@PathVariable("id") Long id, Model model) {
+    public String editProduct(@PathVariable(value = "id") Long id, Model model) {
         logger.info("Edit page for id {} requested", id);
-
         model.addAttribute("product", productService.findById(id)
                 .orElseThrow(NotFoundException::new));
         return "product_form";
     }
 
     @PostMapping("/update")
-    public String updateProduct(@Valid @ModelAttribute("product") Product product, BindingResult result) {
+    public String updateProduct(@Valid Product product, BindingResult bindingResult) {
         logger.info("Update endpoint requested");
 
-        if (result.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "product_form";
         }
         logger.info("Updating product with id {}", product.getId());
@@ -70,13 +64,12 @@ public class ProductController {
     @GetMapping("/new")
     public String newProduct(Model model) {
         logger.info("Create new product request");
-
-        model.addAttribute("product");
+        model.addAttribute( new Product());
         return "product_form";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable("id") Long id) {
+    public String deleteProduct(@PathVariable(value = "id") Long id) {
         logger.info("Product delete request");
 
         productService.deleteById(id);

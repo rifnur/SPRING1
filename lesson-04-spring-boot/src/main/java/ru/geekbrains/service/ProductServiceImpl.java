@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> findWithFilter(Optional<String> titleFilter,
+    public Page<Product> findWithFilter(Optional<String> nameFilter,
                                         Optional<BigDecimal> minPrice,
                                         Optional<BigDecimal> maxPrice,
                                         Optional<Integer> page,
@@ -37,9 +37,9 @@ public class ProductServiceImpl implements ProductService {
                                         Optional<String> sortField,
                                         Optional<String> sortOrder) {
         Specification<Product> spec = Specification.where(null);
-        if (titleFilter.isPresent() && !titleFilter.get().isBlank()) {
-            logger.info("Adding {} to filter", titleFilter.get());
-            spec = spec.and(ProductSpecification.titleLike(titleFilter.get()));
+        if (nameFilter.isPresent() && !nameFilter.get().isBlank()) {
+            logger.info("Adding {} to filter", nameFilter.get());
+            spec = spec.and(ProductSpecification.titleLike(nameFilter.get()));
         }
         if (minPrice.isPresent()) {
             logger.info("Adding {} to filter", minPrice.get());

@@ -52,3 +52,4 @@ Content-Type: application/json
 ###
 DELETE http://localhost:8080/spring-mvc-app/api/v1/product/1
 ###
+System.out.println(encodePasswordWithBCrypt("fsdfd"));

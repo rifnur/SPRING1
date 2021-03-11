@@ -1,22 +1,16 @@
 
 package ru.geekbrains.rest;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.controller.BadRequestException;
 import ru.geekbrains.controller.NotFoundException;
 import ru.geekbrains.persist.Product;
-import ru.geekbrains.service.ProductRepr;
 import ru.geekbrains.service.ProductService;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/product")

@@ -9,7 +9,7 @@ package ru.geekbrains.service;
         import java.util.Optional;
 
 public interface ProductService {
-    Page<Product> findWithFilter(Optional<String> titleFilter,
+    Page<Product> findWithFilter(Optional<String> nameFilter,
                                      Optional<BigDecimal> minPrice,
                                      Optional<BigDecimal> maxPrice,
                                      Optional<Integer> page,

@@ -6,8 +6,8 @@ package ru.geekbrains.persist;
 
 public final class ProductSpecification {
 
-    public static Specification<Product> titleLike(String title) {
-        return (root, query, cb) -> cb.like(root.get("title"), "%" + title + "%");
+    public static Specification<Product> titleLike(String name) {
+        return (root, query, cb) -> cb.like(root.get("name"), "%" + name + "%");
     }
 
     public static Specification<Product> minPriceFilter(BigDecimal minPrice) {

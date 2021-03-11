@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -38,13 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserRepr> findWithFilter(
-            String usernameFilter,
-            Integer minAge,
-            Integer maxAge,
-            Integer page,
-            Integer size,
-            String sortField) {
+    public Page<UserRepr> findWithFilter(String usernameFilter, Integer minAge, Integer maxAge,
+            Integer page, Integer size, String sortField) {
         Specification<User> spec = Specification.where(null);
         if (usernameFilter != null && !usernameFilter.isBlank()) {
             spec = spec.and(UserSpecification.usernameLike(usernameFilter));

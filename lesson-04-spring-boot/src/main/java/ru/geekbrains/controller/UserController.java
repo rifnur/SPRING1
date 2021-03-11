@@ -37,7 +37,8 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService, RoleRepository roleRepository) {
-        this.userService = userService;this.roleRepository = roleRepository;
+        this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -58,15 +59,16 @@ public class UserController {
                 size.orElse(3),
                 sortField.orElse(null)
         );
-
            model.addAttribute("users", users);
         return "user";
     }
 
     @GetMapping("/{id}")
-    public String editPage(@PathVariable("id") Long id, Model model, Authentication auth, HttpServletRequest req) {
+    public String editPage(@PathVariable("id") Long id, Model model,
+                           Authentication auth, HttpServletRequest req) {
         logger.info("Edit page for id {} requested", id);
 
+        // auth = SecurityContextHolder.getContext().getAuthentication();
         auth.getAuthorities().stream().anyMatch(ath -> ath.getAuthority().equals("ROLE_ADMIN"));
         req.isUserInRole("ROLE_ADMIN");
 
@@ -78,7 +80,8 @@ public class UserController {
 
     @Secured({"SUPER_ADMIN"})
     @PostMapping("/update")
-    public String update(@Valid @ModelAttribute("user") UserRepr user, BindingResult result, Model model) {
+    public String update(@Valid @ModelAttribute("user") UserRepr user, BindingResult result,
+                         Model model) {
         logger.info("Update endpoint requested");
 
         model.addAttribute("roles", roleRepository.findAll());

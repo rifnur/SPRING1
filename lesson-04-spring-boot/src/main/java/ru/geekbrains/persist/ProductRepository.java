@@ -12,15 +12,7 @@ package ru.geekbrains.persist;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    List<Product> findProductByTitleLike(String title);
-
-    @Query("select p from Product p " +
-            "where (p.title like :title or :title is null) and " +
-            "      (p.price>=:minPrice or :minPrice is null) and " +
-            "      (p.price<=:maxPrice or :maxPrice is null)")
-    List<Product> findWithFilter(@Param("title") String titleFilter,
-                                 @Param("minPrice") Integer minPrice,
-                                 @Param("maxPrice") Integer maxPrice);
+    List<Product> findProductByNameLike(String name);
 
     List<Product> findByPriceBetween(BigDecimal min, BigDecimal max);
 
