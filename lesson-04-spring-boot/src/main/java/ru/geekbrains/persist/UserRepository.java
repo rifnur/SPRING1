@@ -1,48 +1,27 @@
 package ru.geekbrains.persist;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
 
 @Repository
-public class UserRepository {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    private Map<Long, User> userMap = new ConcurrentHashMap<>();
+    List<User> findUserByUsernameLike(String username);
 
-    private AtomicLong identity = new AtomicLong(0);
+    Optional<User> findUserByUsername(String username);
 
-    @PostConstruct
-    public void init() {
-        this.insert(new User("user1"));
-        this.insert(new User("user2"));
-        this.insert(new User("user3"));
-    }
-
-    public List<User> findAll() {
-        return new ArrayList<>(userMap.values());
-    }
-
-    public User findById(long id) {
-        return userMap.get(id);
-    }
-
-    public void insert(User user) {
-        long id = identity.incrementAndGet();
-        user.setId(id);
-        userMap.put(id, user);
-    }
-
-    public void update(User user) {
-        userMap.put(user.getId(), user);
-    }
-
-    public void delete(long id) {
-        userMap.remove(id);
-    }
+    @Query("select u from User u " +
+            "where (u.username like :username or :username is null) and " +
+            "      (u.age >= :minAge or :minAge is null) and " +
+            "      (u.age <= :maxAge or :maxAge is null)")
+    List<User> findWithFilter(@Param("username") String usernameFilter,
+                              @Param("minAge") Integer minAge,
+                              @Param("maxAge") Integer maxAge);
 
 }

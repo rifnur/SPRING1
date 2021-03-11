@@ -1,54 +1,51 @@
-package ru.geekbrains.persist;
+package ru.geekbrains.service;
 
-import ru.geekbrains.service.UserRepr;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.geekbrains.persist.Role;
+import ru.geekbrains.persist.User;
 
-import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "users")
-@NamedQuery(name = "usersWithRoles",
-        query = "select new ru.geekbrains.persist.UserRole(u.username, r.name) " +
-                "from User u" +
-                " left join u.roles r")
-public class User {
+// DTO
+public class UserRepr {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @NotEmpty
     private String username;
 
-    @Column(nullable = false, length = 512)
+    @NotEmpty
     private String password;
 
-    @Column
+    @JsonIgnore
+    @NotEmpty
+    private String matchingPassword;
+
+    @Email
     private String email;
 
-    @Column
     private Integer age;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public User() {
+    public UserRepr() {
     }
 
-    public User(String username) {
+    public UserRepr(String username) {
         this.username = username;
     }
 
-    public User(UserRepr user) {
+    public UserRepr(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.age = user.getAge();
-        this.roles = user.getRoles();
+        this.roles = new HashSet<>(user.getRoles());
     }
 
     public Long getId() {
@@ -83,6 +80,14 @@ public class User {
         this.email = email;
     }
 
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
+    }
+
     public Integer getAge() {
         return age;
     }
@@ -100,13 +105,15 @@ public class User {
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", age=" + age +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRepr userRepr = (UserRepr) o;
+        return id.equals(userRepr.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
